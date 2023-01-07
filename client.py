@@ -1,6 +1,11 @@
 import socket
 import tkinter as tk
 import threading 
+from firebase_admin import db
+
+ref = db.reference('server/saving-data/fireblog/posts')
+
+print(ref.get())
 
 def recieve():
     while True:
@@ -9,6 +14,8 @@ def recieve():
             text.config(state="normal")
             text.insert(tk.END, data.decode()+"\n")
             text.config(state="disabled")
+        else:
+            print("Client disconnected?")
         
 
 def sendMessage(event=None):
@@ -21,17 +28,20 @@ def sendMessage(event=None):
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 nickname = input("Please enter your nickname\n> ")
+opt = input("Would you like to connect through\n\n1.IP\n2.Server List\n\n> ")
 # Connect to the server
-while True:
-    try:
-        shitez = input("Please enter the ip:\n> ")
-        text,port = shitez.split(":")
-        server_address = (text, int(port))
-        sock.connect(server_address)
-        break
-    except:
-        print("connection error")
-
+if opt == "1":
+    while True:
+        try:
+            shitez = input("Please enter the ip:\n> ")
+            text,port = shitez.split(":")
+            server_address = (text, int(port))
+            sock.connect(server_address)
+            break
+        except:
+            print("connection error")
+else:
+    print("ips")
 
 # Send data
 
